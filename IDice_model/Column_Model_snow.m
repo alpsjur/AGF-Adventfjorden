@@ -95,7 +95,7 @@ global RAI RAS RAW CPA CPW CPI RLN VFS RLI RKI RKW RKS
 % Original parameter file variable names are indicated if different.
 % CL 02/2013
 
-RMY=0.1;      % NRY number of years
+RMY=1;      % NRY number of years
 NDT=360;      % timesteps per year (NDT = 8640 for 1h resolution)
 %NDT=720;      % timesteps per year (NDT = 8640 for 1h resolution)
 
@@ -383,6 +383,9 @@ S_timeseries(1,:) = S;
     HSNO_timeseries(itim) = HSNO;
     T_timeseries(itim,:) = T;
     S_timeseries(itim,:) = S;
+
+    %disp(num2str(N));
+
 
   % Plotting every 10 days
       if rem(itim,10)==0
