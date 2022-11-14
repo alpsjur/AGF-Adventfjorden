@@ -99,7 +99,7 @@ RMY=1;      % NRY number of years
 NDT=360;      % timesteps per year (NDT = 8640 for 1h resolution)
 %NDT=720;      % timesteps per year (NDT = 8640 for 1h resolution)
 
-HMAX=300.;    % vertical dimension of model domain (m)
+HMAX=86.;    % vertical dimension of model domain (m), original 300, Adventfjorden 86
 DZ=2.0;       % vertical resolution (m)
 Depth=(0:DZ:HMAX); % Used for plotting only
 
@@ -255,15 +255,27 @@ GFAC=0.15;       % Value from parameter file, Factor in Shelf/Deep distribution 
   disp('Reading initialization files ... ');
 
   % *** read ocean profile ....
-  input_ocean='initial_ocean';
-  eval(input_ocean);
-  T=TMP1(:,2);
-  S=TMP1(:,3);
+
+  % original code for reading initial ocean
+  %input_ocean='initial_ocean';
+  %eval(input_ocean);
+  %T=TMP1(:,2);
+  %S=TMP1(:,3);
   %T=ones(HMAX/DZ+1,1); T(1:5)=T(1:5)*+4.0; T(6:end)=T(6:end)*2.0;
   %S=ones(HMAX/DZ+1,1); S(1:5)=S(1:5)*32.5; S(6:end)=S(6:end)*34.5;
   %HM=11;	       % mixed layer depth
   %TS=3.0;  % split layer temperature
   %SS=33.0; % split layer salinity
+
+  % read ocean initial state from cnv-files
+  initial_ocean = dlmread('../data/CTD_processed/mean_profile_221031.csv');
+  T=initial_ocean(2:45,3);    %  TODO! go trough this, why 0 at top and bottom in cnv file?
+  S=initial_ocean(2:45,4);
+
+  TS = T(1);
+  SS = S(1);
+
+  HM = 6;                      % TODO! currently hardcoded
 
   disp(['10 dz ocean temperature: ',num2str(T(10))]);
   disp(['10 dz ocean salinity: ',num2str(S(10))]);
@@ -271,6 +283,7 @@ GFAC=0.15;       % Value from parameter file, Factor in Shelf/Deep distribution 
   % *** read ice profile ....
   input_ice=  'initial_ice';
   eval(input_ice);
+
   % sum over ice classes
   HICE=STV(:,1)'*STV(:,2); % concentration * ice thickness
   HSNO=STV(:,1)'*STV(:,3); % concentration * snow thickness
@@ -387,8 +400,8 @@ S_timeseries(1,:) = S;
     %disp(num2str(N));
 
 
-  % Plotting every 10 days
-      if rem(itim,10)==0
+  % Plotting every 5 days
+      if rem(itim,5)==0
 
       % Figure: Ocean column with T and S
       figure(1)
