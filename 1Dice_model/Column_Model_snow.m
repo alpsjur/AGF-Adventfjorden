@@ -245,10 +245,28 @@ GFAC=0.15;       % Value from parameter file, Factor in Shelf/Deep distribution 
   BS(23)=exp(ACOFF*DZ/2.)*(1.-exp(-ACOFF*DZ))/(DZ*RAW*CPW);
 
 % Read Forcing File
-  input_force;
+
+  % original code
+  %input_force;
   % Multiply by scaling factors in column forcing(:,13)
-  FTAB=forcing(1:8,1:12).*repmat(forcing(1:8,13),[1 12]);
+  %FTAB=forcing(1:8,1:12).*repmat(forcing(1:8,13),[1 12]);
   % Calculate Wind variance from wind + STD (W^3+3W*std^2)^(1/3)
+  %FTAB(10,:)=(FTAB(7,:).^3 + 3*FTAB(7,:).*FTAB(8,:).^2).^(1/3);
+
+  % read forcing from file
+  scaling = [1;          %Shortwave radiation
+             1;          %Longwave radiation
+             1;          %Air temperature
+             1;          %Relative humidity
+             1;          %Snow albedo
+             1;          %Snowfall
+             0.1;          %Wind speed
+             1;          %Wind standard deviation
+             1           %ice/wind ratio
+             ]
+  forcing = dlmread('../data/atmospheric_forcing/forcing.csv');
+  FTAB = forcing(2:end, 2:end)';
+  FTAB = FTAB.*repmat(scaling,[1 12]);
   FTAB(10,:)=(FTAB(7,:).^3 + 3*FTAB(7,:).*FTAB(8,:).^2).^(1/3);
 
 % Initial Conditions
@@ -269,7 +287,7 @@ GFAC=0.15;       % Value from parameter file, Factor in Shelf/Deep distribution 
 
   % read ocean initial state from cnv-files
   initial_ocean = dlmread('../data/CTD_processed/mean_profile_221031.csv');
-  T=initial_ocean(2:45,3);    %  TODO! go trough this, why 0 at top and bottom in cnv file?
+  T=initial_ocean(2:45,3);
   S=initial_ocean(2:45,4);
 
   TS = T(1);
