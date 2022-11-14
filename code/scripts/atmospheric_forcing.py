@@ -4,7 +4,6 @@ Computing the climatological atmospheric forcing
 
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 
 
 
@@ -92,9 +91,6 @@ data = {'Shortwave radiation': SW, 'Longwave radiation': LW,
         'Ice/wind ratio': ice_wind_ratio}
 df_forcing = pd.DataFrame(data=data,index=months)
 df_forcing.to_csv('../../data/atmospheric_forcing/forcing.csv')
-
-#%%
-# TODO: make plots of all climatologies
 
 
 
