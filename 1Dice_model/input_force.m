@@ -1,5 +1,5 @@
 % Forcing file with monthly mean forcing
-% 
+
 % Based on the original forcing input file 1DICE_forc.d
 % FTAB(:,1:12) monthly mean forcing, JANUARY => DECEMBER
 % FTAB(:,13) scaling factor to multiply forcing by
