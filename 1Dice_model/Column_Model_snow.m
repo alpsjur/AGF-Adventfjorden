@@ -137,9 +137,9 @@ GFAC=0.15;       % Value from parameter file, Factor in Shelf/Deep distribution 
                             % 'Standard' value was 5.0E-6
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  % Initial time step set below, should NOT be dependant on DT
+  % Initial time step set below, should NOT be dependant on DT  (AL: is dependent on DT...)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  day1=30*10+1;           % initialization Julian day (August 15) - 30-day months /CL
+  day1=(30*10+1);           % initialization Julian day (August 15) - 30-day months /CL
   TIME=(day1-1)*SECY/NDT+SECY/(NDT*2);  % halfway through first timestep on day1 (s) /CL
                           % TIME starts at 0s on January 1 /CL
 
@@ -260,10 +260,10 @@ GFAC=0.15;       % Value from parameter file, Factor in Shelf/Deep distribution 
              1;          %Relative humidity
              1;          %Snow albedo
              1;          %Snowfall
-             0.1;          %Wind speed
+             1;          %Wind speed
              1;          %Wind standard deviation
              1           %ice/wind ratio
-             ]
+             ];
   forcing = dlmread('../data/atmospheric_forcing/forcing.csv');
   FTAB = forcing(2:end, 2:end)';
   FTAB = FTAB.*repmat(scaling,[1 12]);
@@ -287,6 +287,7 @@ GFAC=0.15;       % Value from parameter file, Factor in Shelf/Deep distribution 
 
   % read ocean initial state from cnv-files
   initial_ocean = dlmread('../data/CTD_processed/mean_profile_221031.csv');
+  #initial_ocean = dlmread('../data/CTD_processed/mean_profile_221103.csv');
   T=initial_ocean(2:45,3);
   S=initial_ocean(2:45,4);
 
@@ -391,7 +392,7 @@ S_timeseries(1,:) = S;
     [HM]=mixing(DT,G,F,RHC,RM0,UST,BF,HSNO,HICE,HM);
 
     % CALL DIFFUSION, mixing below mixed layer - added Oct 14, 2022 LHS
-    [T,S]=diffusion(DT,DKF,HM);
+    %[T,S]=diffusion(DT,DKF,HM);
 
     %   Advection could be added at a later stage like done for the Barents Sea:
     %         CALL ADVECTHEAT(DT,AREA,IMAX,T,ADVT,VOLFLUX)  !    LHS
@@ -418,8 +419,8 @@ S_timeseries(1,:) = S;
     %disp(num2str(N));
 
 
-  % Plotting every 5 days
-      if rem(itim,5)==0
+  % Plotting every 10 days
+      if rem(itim,20)==0
 
       % Figure: Ocean column with T and S
       figure(1)
